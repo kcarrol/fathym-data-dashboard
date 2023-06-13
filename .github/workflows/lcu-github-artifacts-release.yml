@@ -2,16 +2,16 @@ name: fathym-it/fathym-data-dashboard
 
 on:
   push:
-    branches: [main]
+    branches: [main,integration]
   pull_request:
-    branches: [main]
+    branches: [main,integration]
   workflow_dispatch:
 
 permissions: write-all
 
 env:
   CI: false
-  Branches: main
+  Branches: main,integration
   MainBranch: main
   NPMRegistry: https://registry.npmjs.org/
   InstallCommand: npm i
