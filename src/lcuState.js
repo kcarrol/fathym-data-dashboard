@@ -332,9 +332,11 @@ const lcuStateDefaults = {
 };
 
 // const LCUState = lcuState || lcuStateDefaults;
-const LCUState = {
+let LCUState = lcuStateDefaults;
+
+LCUState = {
     ...lcuStateDefaults,
     ...(lcuState || {})
 };
 
-export default { LCUState }; 
+export default LCUState; 

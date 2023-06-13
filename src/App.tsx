@@ -27,7 +27,7 @@ import FathymLogo, { FathymLogoMad, FathymLogoSad } from './Components/FathymLog
 import { convertUnitsTo } from './Controls/Convert';
 import Footer from './Components/Footer';
 
-class AppProperties {}
+class AppProperties { }
 
 class AppState {
 
@@ -136,25 +136,25 @@ export default class App extends React.Component<AppProperties, AppState> {
       Legend
     );
 
-    this.geocodioQuery = LCUState.LCU.State.GeocodioQuery;
+    this.geocodioQuery = LCUState.GeocodioQuery;
 
-    this.geocodioSvcUrl = LCUState.LCU.State.GeocodioAPIRoot;
+    this.geocodioSvcUrl = LCUState.GeocodioAPIRoot;
 
-    this.habistackSvcUrl = LCUState.LCU.State.HabistackAPIRoot;
+    this.habistackSvcUrl = LCUState.HabistackAPIRoot;
 
-    this.iotSvcQuery = LCUState.LCU.State.IoTAPIQuery;
+    this.iotSvcQuery = LCUState.IoTAPIQuery;
 
-    this.iotSvcUrl = LCUState.LCU.State.IoTAPIRoot;
+    this.iotSvcUrl = LCUState.IoTAPIRoot;
 
-    const defaultLocation = LCUState.LCU.State.Location;
+    const defaultLocation = LCUState.Location;
 
-    this.refreshRate = LCUState.LCU.State.RefreshRate || 30000;
+    this.refreshRate = LCUState.RefreshRate || 30000;
 
-    this.pointsSvcQuery = LCUState.LCU.State.PointAPIQuery;
+    this.pointsSvcQuery = LCUState.PointAPIQuery;
 
-    this.variablesSvcQuery = LCUState.LCU.State.VariablesAPIQuery;
+    this.variablesSvcQuery = LCUState.VariablesAPIQuery;
 
-    const selectedVars = LCUState.LCU.State.SelectedVariables || [
+    const selectedVars = LCUState.SelectedVariables || [
       'WindGust_Surface',
       'WindSpeed_10Meters',
       'WindDirection_10Meters',
@@ -163,11 +163,11 @@ export default class App extends React.Component<AppProperties, AppState> {
       'Temperature_Surface',
     ];
 
-    const isDark = LCUState.LCU.State.IsDark;
+    const isDark = LCUState.IsDark;
 
-    const defaultChartPrefs = LCUState.LCU.State.DefaultChartPrefs;
+    const defaultChartPrefs = LCUState.DefaultChartPrefs;
 
-    const chartPrefs = LCUState.LCU.State.ChartPrefs;
+    const chartPrefs = LCUState.ChartPrefs;
 
     this.state = {
       ...new AppState(),
@@ -187,7 +187,7 @@ export default class App extends React.Component<AppProperties, AppState> {
 
   //#region Life Cycle
   public componentDidMount() {
-      this.appDark();
+    this.appDark();
 
     if (!this.refreshTimer) {
       this.loadVariablesData();
@@ -222,17 +222,17 @@ export default class App extends React.Component<AppProperties, AppState> {
             <div>
               {!this.state.GeocodioAPIState ? (
                 <Box sx={{ m: 2, mt: 11 }} >
-                <TextField id="outlined-basic" label="Location" variant="outlined" sx={{ mr: 1, width: { xs: '100%', md: '30%' } }} 
+                  <TextField id="outlined-basic" label="Location" variant="outlined" sx={{ mr: 1, width: { xs: '100%', md: '30%' } }}
                     value={this.state.Location.Name}
                     onChange={(e) => this.onLocationChange(e)} onKeyDown={e => e.key === 'Enter' ? this.geocode() : ''} />
                 </Box>
               ) : (
                 <Box sx={{ m: 2 }} >
-                this.addAPIErrors(
+                  this.addAPIErrors(
                   this.state.GeocodioAPIState,
                   'Geocodio',
                   '/docs'
-                )
+                  )
                 </Box>
               )}
             </div>
@@ -242,7 +242,7 @@ export default class App extends React.Component<AppProperties, AppState> {
                 value={this.state.SelectedVariables}
                 label="Variables"
                 input={<OutlinedInput id="select-multiple-chip" label="Chip" />}
-                MenuProps={{ PaperProps: {style: { maxHeight: '50%'}}}}
+                MenuProps={{ PaperProps: { style: { maxHeight: '50%' } } }}
                 renderValue={(selected) => (
                   <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
                     {selected.map((value: any) => (
@@ -276,7 +276,7 @@ export default class App extends React.Component<AppProperties, AppState> {
           </div>
         ) : (
           <Box sx={{ m: 2 }} >
-          this.addAPIErrors(this.state.HabistackAPIState, 'Habistack', '/docs')
+            this.addAPIErrors(this.state.HabistackAPIState, 'Habistack', '/docs')
           </Box>
         )}
 
@@ -296,56 +296,56 @@ export default class App extends React.Component<AppProperties, AppState> {
         </div>
         <Footer />
         {/* <div>{JSON.stringify(this.state.Error, null, 4)}</div> */}
-        
+
       </div>
     );
   }
   //#endregion
 
-protected addAPIErrors(
-  apiState: number | undefined,
-  apiName: string,
-  docsLink: string
-) {
-  return (
-    <Box
-      sx={{ mt: 12}}
-      display="flex"
-      flexDirection="column"
-      alignItems="center"
-      width='100%'
-    ><Card sx={{ p: 3, width: '100%'}} >
-      {apiState === 401 ? (
-        <>
-        <FathymLogoSad sx={{ color:"blue", fontSize:50 }} />
-        <h3>The security key for the {apiName} API is not configured correctly.</h3>
-        </>
-      ) : apiState === 404 ? (
-        <>
-        <FathymLogoSad sx={{ color:"blue", fontSize:50 }} />
-        <h3>The {apiName} API is not configured correctly.</h3>
-        </>
-      ) : apiState === 500 ? (
-        <>
-        <FathymLogoMad sx={{ color:"red", fontSize:50 }} />
-        <h3>There was an error calling the {apiName} API.</h3>
-        </>
-      ) : apiState === 503 ? (
-        <>
-        <FathymLogoMad sx={{ color:"red", fontSize:50 }} />
-        <h3>There was an error calling the {apiName} API.</h3>
-        </>
-      ) : (
-        <>
-        <FathymLogo color="primary" sx={{ fontSize:50 }} />
-        <h3>Loading {apiName}... {apiState}</h3>
-        </>
-      )}
-      <Link href={docsLink} rel="noreferrer" target="_blank" >Check out our docs.</Link>
-      </Card>
-    </Box>
-  );
-}
+  protected addAPIErrors(
+    apiState: number | undefined,
+    apiName: string,
+    docsLink: string
+  ) {
+    return (
+      <Box
+        sx={{ mt: 12 }}
+        display="flex"
+        flexDirection="column"
+        alignItems="center"
+        width='100%'
+      ><Card sx={{ p: 3, width: '100%' }} >
+          {apiState === 401 ? (
+            <>
+              <FathymLogoSad sx={{ color: "blue", fontSize: 50 }} />
+              <h3>The security key for the {apiName} API is not configured correctly.</h3>
+            </>
+          ) : apiState === 404 ? (
+            <>
+              <FathymLogoSad sx={{ color: "blue", fontSize: 50 }} />
+              <h3>The {apiName} API is not configured correctly.</h3>
+            </>
+          ) : apiState === 500 ? (
+            <>
+              <FathymLogoMad sx={{ color: "red", fontSize: 50 }} />
+              <h3>There was an error calling the {apiName} API.</h3>
+            </>
+          ) : apiState === 503 ? (
+            <>
+              <FathymLogoMad sx={{ color: "red", fontSize: 50 }} />
+              <h3>There was an error calling the {apiName} API.</h3>
+            </>
+          ) : (
+            <>
+              <FathymLogo color="primary" sx={{ fontSize: 50 }} />
+              <h3>Loading {apiName}... {apiState}</h3>
+            </>
+          )}
+          <Link href={docsLink} rel="noreferrer" target="_blank" >Check out our docs.</Link>
+        </Card>
+      </Box>
+    );
+  }
 
   //#region API Methods
   //#endregion
@@ -367,9 +367,9 @@ protected addAPIErrors(
   protected addChartPref(chartState: ChartState): void {
     var currentDefaultChartPref: any = {};
 
-    this.state.IsDark && currentDefaultChartPref !== undefined ? 
+    this.state.IsDark && currentDefaultChartPref !== undefined ?
       currentDefaultChartPref = this.state.DefaultChartPrefs.find((e: any) => e.Mode === "Dark")
-    : currentDefaultChartPref = this.state.DefaultChartPrefs.find((e: any) => e.Mode === "Light")
+      : currentDefaultChartPref = this.state.DefaultChartPrefs.find((e: any) => e.Mode === "Light")
 
     const currentChartPref = this.state.ChartPrefs.find(
       (e: any) => e.Name === chartState.Datasets[0].label
@@ -386,13 +386,13 @@ protected addAPIErrors(
         chartState.Datasets[0].options = currentDefaultChartPref?.Options;
       });
 
-      if(currentChartPref !== undefined) {
-        const currentCombined = {...currentDefaultChartPref, ...currentChartPref}
+      if (currentChartPref !== undefined) {
+        const currentCombined = { ...currentDefaultChartPref, ...currentChartPref }
         const defaultOptions = currentDefaultChartPref["Options"];
         const chartOptions = currentChartPref["Options"];
 
         const currentCombinedOptions = _.merge(chartOptions, defaultOptions);
-        
+
         Object.keys(currentCombined).forEach(key => {
 
           // Chartjs properties must have a lower case initial letter
@@ -401,7 +401,7 @@ protected addAPIErrors(
 
           // Pass Options
           chartState.Datasets[0].options = currentCombinedOptions;
-                  
+
         });
       }
     }
@@ -557,7 +557,7 @@ protected addAPIErrors(
               // Set Chart Preferences
               this.addChartPref(newDr[payload.DeviceID][srKey]);
               this.convertUnits(newDr[payload.DeviceID][srKey]);
-              
+
             });
 
             return newDr;
