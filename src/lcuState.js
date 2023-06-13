@@ -1,14 +1,19 @@
-const LCU = {
-    Application: {},
-    State: {
-        PointAPIQuery: '/api/v0/point-query',
-        VariablesAPIQuery: '/api/v0/api-variables',
-        HabistackAPIRoot: '/api/habistack',
-        GeocodioAPIRoot: '/api/geocodio',
-        GeocodioQuery: '/geocode',
-        IoTAPIQuery: '/WarmQuery?includeEmulated=true&page=1&pageSize=100',
-        IoTAPIRoot: '/api/iot',
-        SelectedVariables: [
+import _ from 'lodash';
+
+const lcuState = window.LCU?.State || {};
+
+const lcuStateDefaults = {
+    Location: 'Charleston, SC 29412',
+    RefreshRate: 30000,
+    IsDark: false,
+    PointAPIQuery: '/api/v0/point-query',
+    VariablesAPIQuery: '/api/v0/api-variables',
+    HabistackAPIRoot: '/api/habistack',
+    GeocodioAPIRoot: '/api/geocodio',
+    GeocodioQuery: '/geocode',
+    IoTAPIQuery: '/WarmQuery?includeEmulated=true&page=1&pageSize=100',
+    IoTAPIRoot: '/api/iot',
+    SelectedVariables: [
         'Temperature_Surface',
         'Temperature_2Meters',
         'PrecipitationRateMillisHr_Surface',
@@ -23,50 +28,49 @@ const LCU = {
         'Pressure_Surface',
         'Visibility_Surface',
         'CloudCover_EntireAtmosphere'
-        ],
-        IsDark: false,
-        DefaultChartPrefs: [
+    ],
+    DefaultChartPrefs: [
         {
             Mode: 'Light',
             ChartType: 'Line',
-            BackgroundColor:'rgb(0, 0, 0, 0.4)',
+            BackgroundColor: 'rgb(0, 0, 0, 0.4)',
             BorderColor: 'rgb(0, 0, 0, 0.4)',
-            Options: { scales: { y: { grid: {color: 'rgb(0, 0, 0, 0.1)' } }, x: { grid: {color: 'rgb(0, 0, 0, 0.1)' } } } }
+            Options: { scales: { y: { grid: { color: 'rgb(0, 0, 0, 0.1)' } }, x: { grid: { color: 'rgb(0, 0, 0, 0.1)' } } } }
         },
         {
             Mode: 'Dark',
             ChartType: 'Line',
-            BackgroundColor:'rgb(255, 255, 255, 0.4)',
+            BackgroundColor: 'rgb(255, 255, 255, 0.4)',
             BorderColor: 'rgb(255, 255, 255, 0.4)',
-            Options: { scales: { y: { grid: {color: 'rgb(255, 255, 255, 0.1)' } }, x: { grid: {color: 'rgb(255, 255, 255, 0.1)' } } } }
+            Options: { scales: { y: { grid: { color: 'rgb(255, 255, 255, 0.1)' } }, x: { grid: { color: 'rgb(255, 255, 255, 0.1)' } } } }
         },
         {
             Mode: 'Light',
             ChartType: 'Bar',
-            BackgroundColor:'rgb(0, 0, 0, 0.4)',
+            BackgroundColor: 'rgb(0, 0, 0, 0.4)',
             BorderColor: 'rgb(0, 0, 0, 0.4)',
-            Options: { scales: { y: { grid: {color: 'rgb(0, 0, 0, 0.1)' } }, x: { grid: {color: 'rgb(0, 0, 0, 0.1)' } } } }
+            Options: { scales: { y: { grid: { color: 'rgb(0, 0, 0, 0.1)' } }, x: { grid: { color: 'rgb(0, 0, 0, 0.1)' } } } }
         },
         {
             Mode: 'Dark',
             ChartType: 'Bar',
-            BackgroundColor:'rgb(255, 255, 255, 0.4)',
+            BackgroundColor: 'rgb(255, 255, 255, 0.4)',
             BorderColor: 'rgb(255, 255, 255, 0.4)',
-            Options: { scales: { y: { grid: {color: 'rgb(255, 255, 255, 0.1)' } }, x: { grid: {color: 'rgb(255, 255, 255, 0.1)' } } } }
+            Options: { scales: { y: { grid: { color: 'rgb(255, 255, 255, 0.1)' } }, x: { grid: { color: 'rgb(255, 255, 255, 0.1)' } } } }
         }
-        ],
-        ChartPrefs: [
+    ],
+    ChartPrefs: [
         {
             Name: 'Temperature (Surface)',
             ConvertUnits: 'kelvinToFahrenheit',
             DisplayUnits: '°F',
             DisplayCurrent: true,
             Icons: ['temperature'],
-            IconColors: ['blue','yellow','red'],
+            IconColors: ['blue', 'yellow', 'red'],
             IconSize: ['3em'],
-            IconValues: [80,88,100],
+            IconValues: [80, 88, 100],
             ChartType: 'Line',
-            BackgroundColor:'rgb(255, 0, 30)',
+            BackgroundColor: 'rgb(255, 0, 30)',
             BorderColor: 'rgb(240, 0, 30)',
             Options: { scales: { y: { beginAtZero: false } } }
         },
@@ -75,12 +79,12 @@ const LCU = {
             ConvertUnits: 'kelvinToFahrenheit',
             DisplayUnits: '°F',
             DisplayCurrent: true,
-            Icons: ['emptytemperature','temperature','temperature'],
-            IconColors: ['blue','yellow','red'],
+            Icons: ['emptytemperature', 'temperature', 'temperature'],
+            IconColors: ['blue', 'yellow', 'red'],
             IconSize: ['3em'],
-            IconValues: [80,90,100],
+            IconValues: [80, 90, 100],
             ChartType: 'Line',
-            BackgroundColor:'rgb(255, 0, 30)',
+            BackgroundColor: 'rgb(255, 0, 30)',
             BorderColor: 'rgb(240, 0, 30)',
             Options: { scales: { y: { beginAtZero: false } } }
         },
@@ -94,7 +98,7 @@ const LCU = {
             IconColors: ['lightblue', 'red'],
             IconSize: ['3em'],
             IconValues: [0, 5],
-            BackgroundColor:'rgb(0, 0, 240)',
+            BackgroundColor: 'rgb(0, 0, 240)',
             BorderColor: 'rgb(0, 0, 210)',
             Options: { scales: { y: { beginAtZero: true } } }
         },
@@ -108,7 +112,7 @@ const LCU = {
             IconColors: ['lightblue', 'red'],
             IconSize: ['3em'],
             IconValues: [0, 5],
-            BackgroundColor:'rgb(0, 0, 240)',
+            BackgroundColor: 'rgb(0, 0, 240)',
             BorderColor: 'rgb(0, 0, 210)',
             Options: { scales: { y: { beginAtZero: true } } }
         },
@@ -122,7 +126,7 @@ const LCU = {
             IconColors: ['lightblue', 'red'],
             IconSize: ['3em'],
             IconValues: [0, 10],
-            BackgroundColor:'rgb(0, 0, 240)',
+            BackgroundColor: 'rgb(0, 0, 240)',
             BorderColor: 'rgb(0, 0, 210)',
             Options: { scales: { y: { beginAtZero: true } } }
         },
@@ -136,7 +140,7 @@ const LCU = {
             IconColors: ['green', 'red'],
             IconSize: ['3em'],
             IconValues: [20, 35],
-            BackgroundColor:'rgb(0, 255, 0)',
+            BackgroundColor: 'rgb(0, 255, 0)',
             BorderColor: 'rgb(0, 220, 0)',
             Options: { scales: { y: { beginAtZero: true } } }
         },
@@ -150,7 +154,7 @@ const LCU = {
             IconColors: ['green', 'red'],
             IconSize: ['3em'],
             IconValues: [30, 50],
-            BackgroundColor:'rgb(0, 230, 0)',
+            BackgroundColor: 'rgb(0, 230, 0)',
             BorderColor: 'rgb(0, 200, 0)',
             Options: { scales: { y: { beginAtZero: true } } }
         },
@@ -164,7 +168,7 @@ const LCU = {
             IconColors: ['green'],
             IconSize: ['2.5em'],
             IconValues: [0, 30, 75, 120, 165, 210, 255, 300, 345, 360],
-            BackgroundColor:'rgb(0, 220, 0)',
+            BackgroundColor: 'rgb(0, 220, 0)',
             BorderColor: 'rgb(0, 200, 0)',
             Options: { scales: { y: { beginAtZero: true } } }
         },
@@ -178,7 +182,7 @@ const LCU = {
             IconSize: ['3em'],
             IconValues: [100, 200],
             ChartType: 'Line',
-            BackgroundColor:'rgb(255, 255, 30)',
+            BackgroundColor: 'rgb(255, 255, 30)',
             BorderColor: 'rgb(240, 240, 30)',
             Options: { scales: { y: { beginAtZero: true } } }
         },
@@ -192,7 +196,7 @@ const LCU = {
             IconSize: ['3em'],
             IconValues: [100, 400],
             ChartType: 'Line',
-            BackgroundColor:'rgb(255, 255, 30)',
+            BackgroundColor: 'rgb(255, 255, 30)',
             BorderColor: 'rgb(240, 240, 30)',
             Options: { scales: { y: { beginAtZero: true } } }
         },
@@ -206,7 +210,7 @@ const LCU = {
             IconSize: ['3em'],
             IconValues: [80],
             ChartType: 'Line',
-            BackgroundColor:'rgb(55, 100, 250)',
+            BackgroundColor: 'rgb(55, 100, 250)',
             BorderColor: 'rgb(40, 100, 220)',
             Options: { scales: { y: { beginAtZero: false } } }
         },
@@ -220,7 +224,7 @@ const LCU = {
             IconSize: ['2.5em'],
             IconValues: [80],
             ChartType: 'Line',
-            BackgroundColor:'rgb(55, 100, 240)',
+            BackgroundColor: 'rgb(55, 100, 240)',
             BorderColor: 'rgb(40, 100, 210)',
             Options: { scales: { y: { beginAtZero: false } } }
         },
@@ -234,7 +238,7 @@ const LCU = {
             IconColors: ['red', 'lightgrey'],
             IconSize: ['2.5em'],
             IconValues: [0, 3],
-            BackgroundColor:'rgb(120, 120, 200)',
+            BackgroundColor: 'rgb(120, 120, 200)',
             BorderColor: 'rgb(120, 120, 210)',
             Options: { scales: { y: { beginAtZero: true } } }
         },
@@ -248,7 +252,7 @@ const LCU = {
             IconColors: ['lightgrey'],
             IconSize: ['3em'],
             IconValues: [100],
-            BackgroundColor:'rgb(120, 120, 200)',
+            BackgroundColor: 'rgb(120, 120, 200)',
             BorderColor: 'rgb(120, 120, 210)',
             Options: { scales: { y: { beginAtZero: true } } }
         },
@@ -257,12 +261,12 @@ const LCU = {
             ChartType: 'Line',
             DisplayUnits: '°F',
             DisplayCurrent: true,
-            Icons: ['emptytemperature','temperature','temperature'],
-            IconColors: ['blue','yellow','red'],
+            Icons: ['emptytemperature', 'temperature', 'temperature'],
+            IconColors: ['blue', 'yellow', 'red'],
             IconSize: ['3em'],
-            IconValues: [80,90,100],
+            IconValues: [80, 90, 100],
             ChartType: 'Line',
-            BackgroundColor:'rgb(255, 0, 30)',
+            BackgroundColor: 'rgb(255, 0, 30)',
             BorderColor: 'rgb(240, 0, 30)',
             Options: { scales: { y: { beginAtZero: false } } }
         },
@@ -272,48 +276,48 @@ const LCU = {
             DisplayUnits: '%',
             DisplayCurrent: true,
             Icons: ['water'],
-            IconColors: ['blue','blue','lightblue'],
+            IconColors: ['blue', 'blue', 'lightblue'],
             IconSize: ['3em'],
-            IconValues: [25,50,75],
-            BackgroundColor:'rgb(0, 0, 255)',
+            IconValues: [25, 50, 75],
+            BackgroundColor: 'rgb(0, 0, 255)',
             BorderColor: 'rgb(0, 0, 200)',
             Options: { scales: { y: { beginAtZero: true } } }
         },
         {
             Name: 'motion',
             ChartType: 'Building',
-            BackgroundColor:'rgb(255, 0, 0)',
+            BackgroundColor: 'rgb(255, 0, 0)',
             BorderColor: 'rgb(0, 0, 255)'
         },
         {
             Name: 'magnet',
             ChartType: 'Bar',
-            BackgroundColor:'rgb(255, 0, 0)',
+            BackgroundColor: 'rgb(255, 0, 0)',
             BorderColor: 'rgb(0, 0, 255)',
         },
         {
             Name: 'o_humidity',
             ChartType: 'Bar',
-            BackgroundColor:'rgb(0, 180, 40)',
+            BackgroundColor: 'rgb(0, 180, 40)',
             BorderColor: 'rgb(0, 0, 255)'
         },
         {
             Name: 'o_tempf',
             ChartType: 'Line',
-            BackgroundColor:'rgb(255, 0, 255)',
+            BackgroundColor: 'rgb(255, 0, 255)',
             BorderColor: 'rgb(0, 0, 255)'
         },
         {
             Name: 'petentiometer',
             ChartType: 'Line',
-            BackgroundColor:'rgb(125, 0, 255)',
+            BackgroundColor: 'rgb(125, 0, 255)',
             BorderColor: 'rgb(0, 0, 255)',
             BorderWidth: '5'
         },
         {
             Name: 'photoresistor',
             ChartType: 'Line',
-            BackgroundColor:'rgb(125, 0, 200)',
+            BackgroundColor: 'rgb(125, 0, 200)',
             BorderColor: 'rgb(0, 0, 255)',
             BorderJoinStyle: 'bevel',
             BorderWidth: '5'
@@ -321,14 +325,16 @@ const LCU = {
         {
             Name: 'rangecm',
             ChartType: 'Line',
-            BackgroundColor:'rgb(125, 80, 0)',
+            BackgroundColor: 'rgb(125, 80, 0)',
             BorderColor: 'rgb(0, 0, 255)'
         }
-        ],
-        Location: 'Charleston, SC 29412',
-        RefreshRate: 30000
-    },
-    Settings: {},
-}
+    ]
+};
 
-export default { LCU }; 
+// const LCUState = lcuState || lcuStateDefaults;
+const LCUState = {
+    ...lcuStateDefaults,
+    ...(lcuState || {})
+};
+
+export default { LCUState }; 
