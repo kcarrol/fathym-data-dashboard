@@ -2,6 +2,9 @@ import React, { ChangeEvent } from 'react';
 import Charts, { ChartState } from './Controls/Charts';
 import LCUState from './lcuState';
 import CurrentVals, { CurrentValState } from './Controls/Currentval';
+import { HeroValState } from './Controls/Hero';
+import HeroDataVals, { HeroDataValState } from './Controls/HeroData';
+import HeroShellVals, { HeroShellValState } from './Controls/HeroShell';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -27,6 +30,7 @@ import FathymLogo, { FathymLogoMad, FathymLogoSad } from './Components/FathymLog
 import { convertUnitsTo } from './Controls/Convert';
 import Footer from './Components/Footer';
 
+
 class AppProperties { }
 
 class AppState {
@@ -36,6 +40,12 @@ class AppState {
   public CurrentDevice?: string;
 
   public DeviceChartStates: { [lookup: string]: ChartState };
+
+  public HeroVals: { [lookup: string]: HeroValState };
+
+  public HeroDataVals: { [lookup: string]: HeroDataValState };
+
+  public HeroShellVals: { [lookup: string]: HeroShellValState };
 
   public CurrentVals: { [lookup: string]: CurrentValState };
 
@@ -54,11 +64,15 @@ class AppState {
     Latitude: number;
     Longitude: number;
     Name: string;
+    Timezone: number;
+    DaylightSavings: boolean,
   };
 
   public SelectedVariables: string[];
 
   public IsDark: boolean;
+
+  public DisplayHero: string;
 
   public DefaultChartPrefs: { [name: string]: any };
 
@@ -71,6 +85,12 @@ class AppState {
 
     this.DeviceChartStates = {};
 
+    this.HeroVals = {};
+
+    this.HeroDataVals = {};
+
+    this.HeroShellVals = {};
+
     this.CurrentVals = {};
 
     this.DeviceCurrentVals = {};
@@ -80,9 +100,13 @@ class AppState {
       Latitude: 0,
       Longitude: 0,
       Name: 'Denver, CO',
+      Timezone: -7,
+      DaylightSavings: true,
     };
 
     this.SelectedVariables = [];
+
+    this.DisplayHero = 'none';
 
     this.IsDark = false;
 
@@ -108,6 +132,10 @@ export default class App extends React.Component<AppProperties, AppState> {
   protected iotSvcUrl: string;
 
   protected iotSvcQuery: string;
+
+  protected iotEmulated: string;
+
+  protected iotPages: string;
 
   protected pointsSvcQuery: string;
 
@@ -144,6 +172,10 @@ export default class App extends React.Component<AppProperties, AppState> {
 
     this.iotSvcQuery = LCUState.IoTAPIQuery;
 
+    this.iotEmulated = LCUState.IoTEmulated;
+
+    this.iotPages = LCUState.IoTPages;
+
     this.iotSvcUrl = LCUState.IoTAPIRoot;
 
     const defaultLocation = LCUState.Location;
@@ -160,10 +192,12 @@ export default class App extends React.Component<AppProperties, AppState> {
       'WindDirection_10Meters',
       'PrecipitationRate_Surface',
       'TotalPrecipitation_Surface',
-      'Temperature_Surface',
+      'Temperature_Surface'
     ];
 
     const isDark = LCUState.IsDark;
+
+    const displayHero = LCUState.DisplayHero;
 
     const defaultChartPrefs = LCUState.DefaultChartPrefs;
 
@@ -173,6 +207,7 @@ export default class App extends React.Component<AppProperties, AppState> {
       ...new AppState(),
       SelectedVariables: selectedVars,
       IsDark: isDark,
+      DisplayHero: displayHero,
       DefaultChartPrefs: defaultChartPrefs,
       ChartPrefs: chartPrefs,
       Location: {
@@ -180,6 +215,8 @@ export default class App extends React.Component<AppProperties, AppState> {
         Latitude: 0,
         Longitude: 0,
         Name: defaultLocation,
+        Timezone: 0,
+        DaylightSavings: false,
       },
     };
   }
@@ -217,6 +254,7 @@ export default class App extends React.Component<AppProperties, AppState> {
     return (
       <div>
         <ResponsiveNavBar />
+        
         {variableOptions?.length > 0 ? (
           <div>
             <div>
@@ -260,7 +298,11 @@ export default class App extends React.Component<AppProperties, AppState> {
 
               <Button onClick={(e) => this.geocode()} sx={{ mt: { xs: 2, md: 0 }, ml: { md: 2 } }} >Load Forecast</Button>
             </Box>
-
+            <Box sx={{ m: 2 }} >
+              <HeroShellVals currentHero={this.state.DisplayHero}>
+                <HeroDataVals herovals={this.state.HeroVals} currentHero={this.state.DisplayHero} />
+              </HeroShellVals>
+            </Box>
             <Box sx={{ m: 2 }} >
               <CurrentVals currentvals={this.state.CurrentVals}></CurrentVals>
             </Box>
@@ -364,6 +406,10 @@ export default class App extends React.Component<AppProperties, AppState> {
     });
   }
 
+  public setAppDark(darkness: boolean) {
+    this.setState({ IsDark: darkness })
+  }
+
   protected addChartPref(chartState: ChartState): void {
     var currentDefaultChartPref: any = {};
 
@@ -430,7 +476,7 @@ export default class App extends React.Component<AppProperties, AppState> {
   protected geocode(): void {
     const location = encodeURIComponent(this.state.Location.Name);
 
-    const geocodeApi = `${this.geocodioSvcUrl}${this.geocodioQuery}?q=${location}`;
+    const geocodeApi = `${this.geocodioSvcUrl}${this.geocodioQuery}?q=${location}&fields=timezone`;
 
     fetch(geocodeApi)
       .then((res) => this.handleApiResponse(res))
@@ -443,6 +489,8 @@ export default class App extends React.Component<AppProperties, AppState> {
                 Name: result.results[0].formatted_address,
                 Latitude: result.results[0].location.lat,
                 Longitude: result.results[0].location.lng,
+                Timezone: result.results[0].fields.timezone.utc_offset,
+                DaylightSavings: result.results[0].fields.timezone.observes_dst,
               },
               Error: undefined,
               GeocodioAPIState: undefined
@@ -514,7 +562,7 @@ export default class App extends React.Component<AppProperties, AppState> {
   }
 
   protected loadIoTData(): void {
-    const iotApi = `${this.iotSvcUrl}${this.iotSvcQuery}`;
+    const iotApi = `${this.iotSvcUrl}${this.iotSvcQuery}includeEmulated=${this.iotEmulated}${this.iotPages}`;
 
     fetch(iotApi)
       .then((res) => this.handleApiResponse(res))
@@ -622,8 +670,21 @@ export default class App extends React.Component<AppProperties, AppState> {
                   id: 1,
                   label: `${variableResult.name} (${variableResult.level})`,
                   data: variableResult.values.map((value: any, i: number) => {
+                    var currentDate = new Date()
+                    var currentHours = (currentDate.getUTCHours() + this.state.Location.Timezone)
+                    if(this.state.Location.DaylightSavings) {
+                      currentHours += 1
+                    }
+                    var currentMins = (currentDate.getMinutes() < 10) ? '0' + currentDate.getMinutes() : currentDate.getMinutes();
+                    var completeTime = ""
+                    if((currentHours + i < 24)) {
+                     completeTime = (currentHours + i) + ":" + currentMins
+                    } else {
+                     completeTime = (currentHours + i -24) + ":" + currentMins
+                    }
                     return {
-                      x: i > 0 ? `${i}hr` : 'Now',
+                      /* x: i > 0 ? `${i}hr` : 'Now', */
+                      x: i > 0 ? `${completeTime}` : 'Now',
                       y: value,
                     };
                   }),
@@ -641,6 +702,7 @@ export default class App extends React.Component<AppProperties, AppState> {
           this.setState({
             ChartStates: variableCharts,
             CurrentVals: variableCharts,
+            HeroVals: variableCharts,
             Error: undefined,
             HabistackAPIState: undefined,
           });
@@ -740,5 +802,3 @@ export default class App extends React.Component<AppProperties, AppState> {
   //#endregion
 
 }
-
-

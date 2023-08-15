@@ -1,15 +1,15 @@
 import { BiWorld } from "react-icons/bi";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai"
 import { FaTwitter, FaFacebook, FaInstagram, FaYoutube, FaGithub, FaCode, FaRegNewspaper, FaHeart } from 'react-icons/fa'; 
-import { MdHandshake, MdOutlineSave, MdGavel, MdPolicy, MdWarning, MdLiveHelp, MdStorm, MdMemory, MdMonitorHeart } from 'react-icons/md'; 
+import { IoWater, IoRocketSharp, IoMagnetSharp } from "react-icons/io5";
+import { LuRotate3D } from "react-icons/lu";
+import { MdHandshake, MdOutlineSave, MdGavel, MdPolicy, MdWarning, MdLiveHelp, MdStorm, MdMemory, MdMonitorHeart, MdOutlineBattery0Bar, MdOutlineBattery1Bar, MdOutlineBattery2Bar, MdOutlineBattery3Bar, MdOutlineBattery4Bar, MdOutlineBattery5Bar, MdOutlineBattery6Bar, MdOutlineBatteryFull, MdBolt } from 'react-icons/md'; 
 import { WiCloudy, WiDaySunny, WiHot, WiStrongWind, WiCloudyGusts, WiRain, WiShowers, WiThermometer, WiThermometerExterior, WiWindDeg } from "react-icons/wi";
 import { TbArrowTopCircle, TbGauge, TbArrowUpRightCircle, TbArrowUpLeftCircle, TbArrowRightCircle, TbArrowLeftCircle, TbArrowDownCircle, TbArrowDownRightCircle, TbArrowDownLeftCircle } from "react-icons/tb";
-import { SvgIcon, SvgIconProps } from '@mui/material'; 
-import { AddCircleOutline, DeleteOutline, EditOutlined } from '@mui/icons-material'; 
+import { SvgIcon, SvgIconProps } from '@mui/material';  
+import { IconContext } from 'react-icons/lib';
 import FathymLogo from '../Components/FathymLogo';
-import { WaterIcon } from '../Components/IotIcons';
 import Typography from '@mui/material/Typography'; 
-import { IconContext } from 'react-icons'; 
 
 //Usage Option 1:
 //Can be used as an array of icons, colors and values to swap the icon and color at a given value based on the currentValue property
@@ -25,13 +25,14 @@ import { IconContext } from 'react-icons';
 //  <IconDisplay iconName="save" /> 
 //</IconContext.Provider> 
 
-type IconName = 'fathym' | 'default' | 'warning' | 'twitter' | 'facebook' | 'instagram' | 
+type IconName = 'fathym' | 'default' | 'warning' | 'rocket' | 'magnet' | 'rotate3d' | 'twitter' | 'facebook' | 'instagram' | 
                  'youtube' | 'github' | 'storm' | 'memory' | 'code' | 'livehelp' | 
-                 'news' | 'handshake' | 'policy' | 'gavel' | 'add' | 
-                 'delete' | 'edit' | 'save' | 'sun' | 'sunheat' | 'cloud' | 'wind' | 'gusts' | 'rain' | 'showers' |
-                 'emptytemperature' | 'temperature' | 'heartmonitor' | 'heart' | 'water' | 'gauge' |
+                 'news' | 'handshake' | 'policy' | 'gavel' | 'water' |
+                 'save' | 'sun' | 'sunheat' | 'cloud' | 'wind' | 'gusts' | 'rain' | 'showers' |
+                 'emptytemperature' | 'temperature' | 'heartmonitor' | 'heart' | 'gauge' |
                  'compass' | 'arrowup' | 'arrowupright' | 'arrowupleft' | 'arrowright' | 'arrowleft' |
-                 'arrowdown' | 'arrowdownright' | 'arrowdownleft' | 'visible' | 'invisible';
+                 'arrowdown' | 'arrowdownright' | 'arrowdownleft' | 'visible' | 'invisible' |
+                 'batteryempty' | 'battery15full' | 'battery30full' | 'battery45full' | 'battery60full' | 'battery75full' | 'battery90full' | 'batteryfull' | 'batteryvoltage' ;
 
 interface MappedIcon { 
   component: React.ElementType | React.ElementType<SvgIconProps>; 
@@ -56,6 +57,9 @@ const iconMap: Record<IconName, MappedIcon> = {
   fathym: { component: FathymLogo, isSvgIcon: true },
   default: { component: BiWorld },
   warning: { component: MdWarning },
+  rocket: { component: IoRocketSharp },
+  magnet: { component: IoMagnetSharp },
+  rotate3d: { component: LuRotate3D },
   twitter: { component: FaTwitter }, 
   facebook: { component: FaFacebook }, 
   instagram: { component: FaInstagram }, 
@@ -68,10 +72,8 @@ const iconMap: Record<IconName, MappedIcon> = {
   news: { component: FaRegNewspaper }, 
   handshake: { component: MdHandshake }, 
   policy: { component: MdPolicy }, 
-  gavel: { component: MdGavel }, 
-  add: { component: AddCircleOutline, isSvgIcon: true }, 
-  delete: { component: DeleteOutline, isSvgIcon: true }, 
-  edit: { component: EditOutlined, isSvgIcon: true }, 
+  gavel: { component: MdGavel },
+  water: { component: IoWater },
   save: { component: MdOutlineSave }, 
   sun: { component: WiDaySunny },
   sunheat: { component: WiHot },
@@ -84,7 +86,6 @@ const iconMap: Record<IconName, MappedIcon> = {
   temperature: { component: WiThermometer },
   heartmonitor: { component: MdMonitorHeart },
   heart: { component: FaHeart },
-  water: { component: WaterIcon, isSvgIcon: true },
   gauge: { component: TbGauge },
   compass: { component: WiWindDeg },
   arrowup: { component: TbArrowTopCircle },
@@ -96,7 +97,16 @@ const iconMap: Record<IconName, MappedIcon> = {
   arrowdownright: { component: TbArrowDownRightCircle },
   arrowdownleft: { component: TbArrowDownLeftCircle },
   visible: { component: AiOutlineEye },
-  invisible: { component: AiOutlineEyeInvisible }
+  invisible: { component: AiOutlineEyeInvisible },
+  batteryempty: { component: MdOutlineBattery0Bar },
+  battery15full: { component: MdOutlineBattery1Bar },
+  battery30full: { component: MdOutlineBattery2Bar },
+  battery45full: { component: MdOutlineBattery3Bar },
+  battery60full: { component: MdOutlineBattery4Bar },
+  battery75full: { component: MdOutlineBattery5Bar },
+  battery90full: { component: MdOutlineBattery6Bar },
+  batteryfull: { component: MdOutlineBatteryFull },
+  batteryvoltage: { component: MdBolt }
 };
 
 function IconDisplay({ iconName, currentColor, iconSize }: IconDisplayProps) { 

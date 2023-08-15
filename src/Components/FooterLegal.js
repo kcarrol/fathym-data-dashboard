@@ -6,8 +6,7 @@ import Typography from '@mui/material/Typography';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
-import { IconDisplay } from '../Controls/IconManager';
-import { IconContext } from 'react-icons';
+import { IconFormat } from '../Controls/IconManager';
 import { useTheme } from '@mui/material/styles';
 
 export default function FooterLegal() {
@@ -19,9 +18,7 @@ export default function FooterLegal() {
       <List>
           <ListItem>
             <ListItemIcon>
-              <IconContext.Provider value={{ color:`${theme.palette.primary}`, size:"1.2em" }}>
-                <IconDisplay iconName="handshake" />
-              </IconContext.Provider>
+              <IconFormat iconNames={["handshake"]} iconColors={[`${theme.palette.primary}`]} values={[0]} iconSize="1.5em" currentValue={0} />
             </ListItemIcon>
             <Link href="https://www.fathym.com/enterprise-agreement/" underline="none" variant="body2">
               {'Enterprise Agreement'}
@@ -29,9 +26,7 @@ export default function FooterLegal() {
           </ListItem>
           <ListItem>
             <ListItemIcon>
-              <IconContext.Provider value={{ color:`${theme.palette.primary}`, size:"1.2em" }}>
-                <IconDisplay iconName="gavel" />
-              </IconContext.Provider>
+              <IconFormat iconNames={["gavel"]} iconColors={[`${theme.palette.primary}`]} values={[0]} iconSize="1.5em" currentValue={0} />
             </ListItemIcon>
             <Link href="https://www.fathym.com/terms-of-services/" underline="none" variant="body2">
               {'Terms of Service'}
@@ -39,9 +34,7 @@ export default function FooterLegal() {
           </ListItem>
           <ListItem>
             <ListItemIcon>
-              <IconContext.Provider value={{ color:`${theme.palette.primary}`, size:"1.2em" }}>
-                <IconDisplay iconName="policy" />
-              </IconContext.Provider>
+              <IconFormat iconNames={["policy"]} iconColors={[`${theme.palette.primary}`]} values={[0]} iconSize="1.5em" currentValue={0} />
             </ListItemIcon>
             <Link href="https://www.fathym.com/privacy-policy/" underline="none" variant="body2">
               {'Privacy Policy'}

@@ -5,8 +5,7 @@ import Typography from '@mui/material/Typography';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
-import { IconDisplay } from '../Controls/IconManager';
-import { IconContext } from 'react-icons';
+import { IconFormat } from '../Controls/IconManager';
 import { useTheme } from '@mui/material/styles';
 
 export default function FooterInfo() { 
@@ -18,9 +17,7 @@ export default function FooterInfo() {
       <List>
           <ListItem>
             <ListItemIcon>
-              <IconContext.Provider value={{ color:`${theme.palette.primary}`, size:"1.2em" }}>
-                <IconDisplay iconName="code" />
-              </IconContext.Provider>
+              <IconFormat iconNames={["code"]} iconColors={[`${theme.palette.primary}`]} values={[0]} iconSize="1.5em" currentValue={0} />
             </ListItemIcon>
             <Link href="https://www.fathym.com/docs/" underline="none" variant="body2">
               {'Docs'}
@@ -28,9 +25,7 @@ export default function FooterInfo() {
           </ListItem>
           <ListItem>
             <ListItemIcon>
-              <IconContext.Provider value={{ color:`${theme.palette.primary}`, size:"1.2em" }}>
-                <IconDisplay iconName="news" />
-              </IconContext.Provider>
+              <IconFormat iconNames={["news"]} iconColors={[`${theme.palette.primary}`]} values={[0]} iconSize="1.5em" currentValue={0} />
             </ListItemIcon>
             <Link href="https://www.fathym.com/blog/" underline="none" variant="body2">
               {'Blog'}
@@ -38,9 +33,7 @@ export default function FooterInfo() {
           </ListItem>
           <ListItem>
             <ListItemIcon>
-              <IconContext.Provider value={{ color:`${theme.palette.primary}`, size:"1.2em" }}>
-                <IconDisplay iconName="livehelp" />
-              </IconContext.Provider>
+              <IconFormat iconNames={["livehelp"]} iconColors={[`${theme.palette.primary}`]} values={[0]} iconSize="1.5em" currentValue={0} />
             </ListItemIcon>
             <Link href="mailto:support@fathym.com" underline="none" variant="body2">
               {'Support'}

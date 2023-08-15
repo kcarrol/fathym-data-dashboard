@@ -1,6 +1,7 @@
 import * as React from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
+import Link from '@mui/material/Link';
 import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
@@ -13,8 +14,12 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import FathymLogo from './FathymLogo';
 
-const pages = ['Products', 'Pricing', 'Blog'];
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
+const pages = [
+                {Title: 'Open Biotech', Link: 'https://www.openbiotech.co/'},
+                {Title: 'Fathym', Link: 'https://www.fathym.com/'},
+                {Title: 'Blog', Link: 'https://www.fathym.com/blog'}
+              ];
+const settings = ['Profile', 'Account', 'Settings', 'Logout'];
 
 function ResponsiveNavBar() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
@@ -86,8 +91,8 @@ function ResponsiveNavBar() {
               }}
             >
               {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  {page}
+                <MenuItem key={page} onClick={handleCloseNavMenu} component={Link} href={page.Link}>
+                  {page.Title}
                 </MenuItem>
               ))}
             </Menu>
@@ -115,9 +120,11 @@ function ResponsiveNavBar() {
               <Button
                 key={page}
                 onClick={handleCloseNavMenu}
+                href={page.Link}
+                style={{textAlign: 'center'}}
                 sx={{ my: 2, ml: 2, color: 'custom', display: 'block' }}
               >
-                {page}
+                {page.Title}
               </Button>
             ))}
           </Box>
@@ -125,7 +132,7 @@ function ResponsiveNavBar() {
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Matt Smith" src="/static/images/avatar/2.jpg" />
+                <Avatar alt="Fathym" src="/static/images/avatar/1.jpg" />
               </IconButton>
             </Tooltip>
             <Menu
@@ -149,6 +156,7 @@ function ResponsiveNavBar() {
                   <Typography textAlign="center">{setting}</Typography>
                 </MenuItem>
               ))}
+              
             </Menu>
           </Box>
         </Toolbar>

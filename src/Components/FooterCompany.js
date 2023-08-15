@@ -4,8 +4,7 @@ import Typography from '@mui/material/Typography';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
-import { IconDisplay } from '../Controls/IconManager';
-import { IconContext } from 'react-icons';
+import { IconFormat } from '../Controls/IconManager';
 import { useTheme } from '@mui/material/styles';
 
 export default function FooterCompany() { 
@@ -17,11 +16,7 @@ export default function FooterCompany() {
       <List>
           <ListItem>
             <ListItemIcon>
-              <IconContext.Provider>
-                <Typography fontSize="large" sx={{ color:"blue", width: 1/2 }}>
-                  <IconDisplay iconName="fathym" />
-                </Typography>
-              </IconContext.Provider>
+              <IconFormat iconNames={["fathym"]} iconColors={[`${theme.palette.primary}`]} values={[0]} iconSize="1.5em" currentValue={0} />
             </ListItemIcon>
             <Link href="https://www.fathym.com/" underline="none" variant="body2">
               {'Fathym Platform'}
@@ -29,9 +24,7 @@ export default function FooterCompany() {
           </ListItem>
           <ListItem>
             <ListItemIcon>
-              <IconContext.Provider value={{ color:`${theme.palette.primary}`, size:"1.2em" }}>
-                <IconDisplay iconName="memory" />
-              </IconContext.Provider>
+              <IconFormat iconNames={["memory"]} iconColors={[`${theme.palette.primary}`]} values={[0]} iconSize="1.5em" currentValue={0} />
             </ListItemIcon>
             <Link href="https://www.fathym.com/iot/" underline="none" variant="body2">
               {'IoT Ensemble'}
@@ -39,9 +32,7 @@ export default function FooterCompany() {
           </ListItem>
           <ListItem>
             <ListItemIcon>
-              <IconContext.Provider value={{ color:`${theme.palette.primary}`, size:"1.2em" }}>
-                <IconDisplay iconName="storm" />
-              </IconContext.Provider>
+              <IconFormat iconNames={["storm"]} iconColors={[`${theme.palette.primary}`]} values={[0]} iconSize="1.5em" currentValue={0} />
             </ListItemIcon>
             <Link href="https://www.fathym.com/forecast/" underline="none" variant="body2">
               {'Habistack'}

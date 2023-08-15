@@ -71,6 +71,10 @@ export default class CurrentVals extends React.Component<
       <Grid container spacing={2} >
         {datas.map((data, i) => {
           const dataLength = data.datasets[0].data.length - 1;
+          var currentValue = data.datasets[0].data[dataLength].y;
+          if (data.datasets[0].currentFirstPlace === true) {
+            currentValue = data.datasets[0].data[0].y
+          }
           var currentIcon: IconFormatProps = {
             iconNames: ["default"],
             iconColors: ["grey"],
@@ -91,7 +95,7 @@ export default class CurrentVals extends React.Component<
             currentIcon.iconSize = data.datasets[0].iconSize;
           }
           if (data.datasets[0].data[0].y) {
-            currentIcon.currentValue = data.datasets[0].data[0].y;
+            currentIcon.currentValue = currentValue;
           }
           if (data.datasets[0].displayCurrent) {
             return (
@@ -107,8 +111,8 @@ export default class CurrentVals extends React.Component<
                         currentValue={currentIcon.currentValue}
                       />
                     }
-                    title={(data.datasets[0].data[0].y)}
-                    content={data.datasets[0].label}
+                    title={(currentValue)}
+                    content={data.datasets[0].name}
                     unit={data.datasets[0].displayUnits}
                   />
                 </Grid>
