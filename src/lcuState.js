@@ -299,7 +299,7 @@ const lcuStateDefaults = {
         },
         {
             Name: 'AZ',
-            ChartType: 'Bar',
+            ChartType: 'Line',
             DisplayUnits: 'Z m/s²',
             DisplayCurrent: true,
             Icons: ['rocket'],
