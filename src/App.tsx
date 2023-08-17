@@ -35,9 +35,9 @@ class AppProperties { }
 
 class AppState {
 
-  public ChartStates: { [lookup: string]: ChartState };
+  public ChartStates: { [lookup: string]: ChartState }; 
 
-  public CurrentDevice?: string;
+  public CurrentDevice?: string; 
 
   public DeviceChartStates: { [lookup: string]: ChartState };
 
